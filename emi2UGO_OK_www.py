@@ -9,7 +9,7 @@ import os
 import shutil
 
 # Konfiguracja strony
-st.set_page_config(page_title="PDF Analyzer Pro", layout="wide")
+st.set_page_config(page_title="PDF Analyzer", layout="wide")
 
 class PDFWebAnalyzer:
     def __init__(self, raw_data, pixel_size):
