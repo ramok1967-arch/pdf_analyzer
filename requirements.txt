@@ -1,6 +1,6 @@
 streamlit
 hyperspy
-rosettasci
+rosetta-sci
 matplotlib
 scipy
 numpy
