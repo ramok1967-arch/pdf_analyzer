@@ -140,7 +140,7 @@ class PDFWebAnalyzer:
         st.download_button("Pobierz wynik G(r) (.txt)", output.getvalue(), "final_pdf.txt")
 
 # --- Logika ładowania plików ---
-st.title("🔬 PDF Analyzer Pro")
+st.title("🔬 PDF Analyzer")
 uploaded_files = st.file_uploader("Wgraj pliki (.emi i .ser razem)", type=['emi', 'ser', 'dm3', 'dm4', 'hspy', 'tiff'], accept_multiple_files=True)
 
 if uploaded_files:
