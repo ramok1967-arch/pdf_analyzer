@@ -1,6 +1,5 @@
 streamlit
-hyperspy
-rosetta-sci
+hyperspy[fei]
 matplotlib
 scipy
 numpy
