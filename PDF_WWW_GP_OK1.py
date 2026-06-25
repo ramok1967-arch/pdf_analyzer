@@ -11,6 +11,7 @@ from matplotlib.patches import Circle
 from matplotlib.ticker import MultipleLocator
 from scipy.ndimage import gaussian_filter1d
 from scipy.signal import find_peaks
+from scipy.integrate import trapezoid
 
 
 st.set_page_config(page_title="PDF Analyzer", layout="wide")
@@ -203,7 +204,7 @@ class PDFWebAnalyzer:
             * np.sin(q[:, None] * self.r_vals)
             * lorch[:, None]
         )
-        g_r = (2.0 / np.pi) * np.trapz(integrand, q, axis=0)
+        g_r = (2.0 / np.pi) * trapezoid(integrand, q, axis=0)
 
         g_r = np.nan_to_num(g_r, nan=0.0, posinf=0.0, neginf=0.0)
 
