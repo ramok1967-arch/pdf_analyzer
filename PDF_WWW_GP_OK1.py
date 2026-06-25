@@ -81,7 +81,7 @@ class PDFWebAnalyzer:
             st.caption("Wybierz kierunek analizy i szerokość sektorów.")
 
             self.target_angle = st.slider("Kąt bazowy (Target Angle)", 0, 360, 135)
-            self.sector_width = st.slider("Szerokość sektora (°)", 1, 90, 15)
+            self.sector_width = st.slider("Szerokość sektora (°)", 1, 90, 30)
 
         # 4. Maskowanie skrzydeł
         with st.sidebar.expander("📐 Maskowanie artefaktów", expanded=True):
@@ -99,7 +99,7 @@ class PDFWebAnalyzer:
             )
             if self.use_mask_1:
                 self.r_min_1 = st.slider(
-                    "Maska od środka - Skrzydło 1",
+                    "Maska od środka - sektor 1",
                     0,
                     max_mask_limit,
                     default_rmin,
@@ -112,7 +112,7 @@ class PDFWebAnalyzer:
             )
             if self.use_mask_2:
                 self.r_min_2 = st.slider(
-                    "Maska od środka - Skrzydło 2",
+                    "Maska od środka - sektor 2",
                     0,
                     max_mask_limit,
                     default_rmin,
