@@ -161,7 +161,7 @@ class PDFWebAnalyzer:
             a2_deg = (self.target_angle + 180) % 360
 
             default_rmin = min(
-                200, max_mask_limit // 2 if max_mask_limit < 200 else 200
+                100, max_mask_limit // 2 if max_mask_limit < 200 else 200
             )
 
             self.use_mask_1 = st.checkbox(
@@ -238,7 +238,7 @@ class PDFWebAnalyzer:
                     "log10(λ) - gładkość linii bazowej ALS",
                     2.0,
                     8.0,
-                    5.0,
+                    4.0,
                     step=0.5,
                     help="Większa wartość = bardziej sztywna/gładka linia bazowa.",
                 )
