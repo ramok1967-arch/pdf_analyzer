@@ -14,7 +14,7 @@ from scipy import sparse
 from scipy.sparse.linalg import spsolve
 
 
-_trapezoid = getattr(np, "trapezoid", np.trapz)
+_trapezoid = np.trapezoid
 
 
 def als_baseline(y, lam=1e5, p=0.01, niter=10):
