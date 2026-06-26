@@ -1,6 +1,7 @@
 import io
 import os
 import tempfile
+import shutil
 
 import numpy as np
 import streamlit as st
@@ -14,6 +15,7 @@ from scipy import sparse
 from scipy.sparse.linalg import spsolve
 
 
+# Bezpośrednie przypisanie dla nowoczesnych wersji NumPy (2.0+ / Python 3.14)
 _trapezoid = np.trapezoid
 
 
@@ -236,7 +238,7 @@ class PDFWebAnalyzer:
                     "log10(λ) - gładkość linii bazowej ALS",
                     2.0,
                     8.0,
-                    4.0,
+                    5.0,
                     step=0.5,
                     help="Większa wartość = bardziej sztywna/gładka linia bazowa.",
                 )
@@ -363,7 +365,6 @@ class PDFWebAnalyzer:
         if r_masked.size == 0 or valid_pixels.size == 0:
             raise ValueError("Brak danych po zastosowaniu maski sektora.")
 
-        # Prosty radialny binning 1 px - zostawiony celowo, żeby zmiany były minimalne.
         r_int = r_masked.astype(int)
 
         max_r = int(np.max(r_int))
@@ -694,22 +695,37 @@ def get_safe_scale(signal) -> float:
     return float(scale)
 
 
-def load_data(uploaded_file):
-    suffix = os.path.splitext(uploaded_file.name)[1]
-    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
-        tmp.write(uploaded_file.read())
-        tmp_path = tmp.name
+def load_data(uploaded_files):
+    if not isinstance(uploaded_files, list):
+        uploaded_files = [uploaded_files]
+        
+    temp_dir = tempfile.mkdtemp()
+    main_file_path = None
+    
+    for uploaded_file in uploaded_files:
+        target_path = os.path.join(temp_dir, uploaded_file.name)
+        with open(target_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+            
+        suffix = os.path.splitext(uploaded_file.name)[1].lower()
+        if suffix in [".emi", ".edm", ".dm3", ".dm4", ".hdf5", ".tiff", ".tif"]:
+            main_file_path = target_path
+
+    if main_file_path is None and uploaded_files:
+        main_file_path = os.path.join(temp_dir, uploaded_files[0].name)
 
     try:
-        signal = hs.load(tmp_path)
+        if main_file_path is None:
+            raise ValueError("Brak plików do wczytania.")
+        signal = hs.load(main_file_path)
+        data = signal.data.copy()
+        scale = get_safe_scale(signal)
     finally:
         try:
-            os.remove(tmp_path)
+            shutil.rmtree(temp_dir)
         except OSError:
             pass
 
-    data = signal.data
-    scale = get_safe_scale(signal)
     return data, scale
 
 
@@ -719,21 +735,22 @@ def main():
         "Sektorowa analiza dyfrakcji 2D z obliczaniem Relative G(r) lub przybliżonego S(Q)."
     )
 
-    uploaded_file = st.file_uploader(
-        "Wczytaj plik z danymi dyfrakcyjnymi",
+    uploaded_files = st.file_uploader(
+        "Wczytaj plik(i) z danymi dyfrakcyjnymi (dla par EMI/SER zaznacz oba pliki na raz)",
         type=None,
+        accept_multiple_files=True,
     )
 
-    if uploaded_file is None:
+    if not uploaded_files:
         st.info("Wybierz plik, aby rozpocząć analizę.")
         return
 
     try:
-        raw_data, q_per_pixel = load_data(uploaded_file)
+        raw_data, q_per_pixel = load_data(uploaded_files)
         analyzer = PDFWebAnalyzer(raw_data, q_per_pixel)
         analyzer.run()
     except Exception as e:
-        st.error(f"Błąd: {e}")
+        st.error(f"Błąd podczas ładowania danych: {e}")
 
 
 if __name__ == "__main__":
