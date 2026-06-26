@@ -236,7 +236,7 @@ class PDFWebAnalyzer:
                     "log10(λ) - gładkość linii bazowej ALS",
                     2.0,
                     8.0,
-                    5.0,
+                    4.0,
                     step=0.5,
                     help="Większa wartość = bardziej sztywna/gładka linia bazowa.",
                 )
