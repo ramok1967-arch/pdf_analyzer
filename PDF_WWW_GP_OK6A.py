@@ -100,8 +100,8 @@ class PDFWebAnalyzer:
                 self.q_scale_correction = st.slider(
                     "Mnożnik korekcyjny q/pixel",
                     min_value=0.80,
-                    max_value=1.20,
-                    value=1.00,
+                    max_value=1.50,
+                    value=1.273,
                     step=0.005,
                 )
                 self.q_per_pixel = self.q_per_pixel_file * self.q_scale_correction
